@@ -1,0 +1,8 @@
+# Modules installed when running the npm install command
+node_modules
+
+# npm log
+npm-debug.log
+
+# Development environment uploads path
+public

@@ -1,0 +1,26 @@
+{
+    "name"              : "ApiNetChat",
+    "description"       : "API for the chat developed for Tuts+ series in RESTful API with NodeJS and ExpressJS.",
+    "version"           : "1.0.0",
+    "private"           : true,
+    "scripts"           : {
+        "start"         : "DEBUG=app node ./bin/www",
+        "test"          : "mocha"
+    },
+    "dependencies"      : {
+        "bcrypt"        : "0.8.x",
+        "body-parser"   : "1.10.x",
+        "debug"         : "2.1.x",
+        "express"       : "4.10.x",
+        "mkdirp"        : "0.5.x",
+        "mongoose"      : "3.8.x",
+        "morgan"        : "1.5.x",
+        "multiparty"    : "4.1.x",
+        "rimraf"        : "2.2.x"
+    },
+    "devDependencies"   : {
+        "mocha"         : "2.1.x",
+        "should"        : "4.4.x",
+        "supertest"     : "0.15.x"
+    }
+}
