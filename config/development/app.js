@@ -4,7 +4,7 @@ module.exports  = {
     'request_lifespan'  : 100000,
     'public_path'       : '../public',
     'uploads_path'      : './public/uploads',
-    'uploads_tmp_path'  : './tmp',
+    'uploads_tmp_path'  : '/tmp',
     'user_types'        : [
         'superadmin',
         'admin',
