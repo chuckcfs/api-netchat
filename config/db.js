@@ -8,5 +8,5 @@ if ( env == 'development' ) {
 }
 
 exports.get     = function() {
-    return "mongodb://" + config.user + ":" + config.pass + "@" + config.host + ":" + config.port + "/" + config.name;
+    return "mongodb://" + config.user + ":" + config.pass + "@" + config.host + ":" + config.port + "/" + config.db;
 };
