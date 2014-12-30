@@ -5,13 +5,16 @@ var express         = require( 'express' ),
     SessionHandler  = require( './lib/session' );
 
 // Application required routers
-var sessions        = require( './routers/sessions' );
+var sessions        = require( './routers/sessions' ),
+    users           = require( './routers/users' );
 
 startup.launch( express, app );
 
 app.use( '/sessions', sessions );
 
 app.use( SessionHandler.validate );
+
+app.use( '/users', users );
 
 app.use( error.notFound );
 app.use( error.handler );

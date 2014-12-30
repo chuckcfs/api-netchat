@@ -46,6 +46,10 @@ UserSchema.method( 'auth', function ( req, cb ) {
     });
 });
 
+UserSchema.method( 'checkPassword', function ( pass ) {
+    return bcrypt.compareSync( pass, this.pass );
+});
+
 UserSchema.pre( 'save', function ( next ) {
     var user    = this;
 
