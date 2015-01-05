@@ -7,6 +7,34 @@ var express     = require( 'express' ),
     Utils       = require( '../lib/utils' );
 
 router.get( '/', function ( req, res, next ) {
+    if ( req.query.filters != undefined ) {
+        var filters = ( typeof req.query.filters == 'string' ) ? JSON.parse( req.query.filters ) : req.query.filters;
+
+        if ( filters.name && filters.user_id ) {
+            var filters = {
+                '$or'   : [
+                    {
+                        'from._id'  : {
+                            '$not'  : new RegExp( filters.user_id )
+                        },
+                        'from.name' : new RegExp( filters.name, "i" )
+                    },
+                    {
+                        'to._id'    : {
+                            '$not'  : new RegExp( filters.user_id )
+                        },
+                        'to.name'   : new RegExp( filters.name, "i" )
+                    }
+                ]
+            }
+
+            delete filters.name;
+            delete filters.user_id;
+        }
+
+        req.query.filters   = filters;
+    }
+
     Utils.paginate( Message, req, res, next );
 });
 
