@@ -1,26 +1,5 @@
-var mongoose        = require( 'mongoose' ),
-    MessageSchema   = mongoose.Schema({
-        attachment      : {
-            type        : {
-                name    : {
-                    type        : String,
-                    required    : true
-                },
-                path    : {
-                    type        : String,
-                    required    : true
-                }
-            },
-            required    : false
-        },
-        chat_id         : {
-            type        : String,
-            required    : true
-        },
-        content         : {
-            type        : String,
-            required    : true
-        },
+var mongoose    = require( 'mongoose' ),
+    ChatSchema  = mongoose.Schema({
         creation_date   : {
             type        : Date,
             required    : true,
@@ -51,7 +30,12 @@ var mongoose        = require( 'mongoose' ),
                 }
             },
             required    : true
+        },
+        last_message    : {
+            type        : Date,
+            required    : true,
+            default     : Date.now
         }
     });
 
-module.exports      = mongoose.model( 'Message', MessageSchema );
+module.exports  = mongoose.model( 'Chat', ChatSchema );

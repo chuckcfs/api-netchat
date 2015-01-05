@@ -3,38 +3,11 @@ var express     = require( 'express' ),
     join        = require( 'path' ).join,
     router      = express.Router(),
     config      = require( '../config/app' ),
+    Chat        = require( '../models/chat' ),
     Message     = require( '../models/message' ),
     Utils       = require( '../lib/utils' );
 
 router.get( '/', function ( req, res, next ) {
-    if ( req.query.filters != undefined ) {
-        var filters = ( typeof req.query.filters == 'string' ) ? JSON.parse( req.query.filters ) : req.query.filters;
-
-        if ( filters.name && filters.user_id ) {
-            var filters = {
-                '$or'   : [
-                    {
-                        'from._id'  : {
-                            '$not'  : new RegExp( filters.user_id )
-                        },
-                        'from.name' : new RegExp( filters.name, "i" )
-                    },
-                    {
-                        'to._id'    : {
-                            '$not'  : new RegExp( filters.user_id )
-                        },
-                        'to.name'   : new RegExp( filters.name, "i" )
-                    }
-                ]
-            }
-
-            delete filters.name;
-            delete filters.user_id;
-        }
-
-        req.query.filters   = filters;
-    }
-
     Utils.paginate( Message, req, res, next );
 });
 
@@ -45,6 +18,7 @@ router.post( '/', function ( req, res, next ) {
     };
 
     Message.create({
+        chat_id     : req.param( 'chat' ),
         content     : req.param( 'content' ),
         from        : sender,
         to          : req.param( 'to' )
@@ -56,30 +30,36 @@ router.post( '/', function ( req, res, next ) {
             return next( err );
         }
 
-        // Check if the message has an attachment
-        var attachment  = req.param( 'attachment' );
-        if ( attachment ) {
-            var dest    = join( config.uploads_path, message.id );
+        Chat.findById( message.chat_id, function ( err, chat ) {
+            chat.last_message   = Date.now();
 
-            Utils.move( attachment.name, config.uploads_tmp_path, dest, function ( err ) {
-                if ( err ) {
-                    res.json({
-                        message : message,
-                        error   : err
+            chat.save( function () {
+                // Check if the message has an attachment
+                var attachment  = req.param( 'attachment' );
+                if ( attachment ) {
+                    var dest    = join( config.uploads_path, message.id );
+
+                    Utils.move( attachment.name, config.uploads_tmp_path, dest, function ( err ) {
+                        if ( err ) {
+                            res.json({
+                                message : message,
+                                error   : err
+                            });
+                        }
+
+                        message.attachment  = {
+                            name    : attachment.name,
+                            path    : join( dest, attachment.name )
+                        };
+                        message.save( function () {
+                            res.json( message );
+                        });
                     });
-                }
-
-                message.attachment  = {
-                    name    : attachment.name,
-                    path    : join( dest, attachment.name )
-                };
-                message.save( function () {
+                } else {
                     res.json( message );
-                });
+                }
             });
-        } else {
-            res.json( message );
-        }
+        });
     });
 });
 
@@ -113,13 +93,6 @@ router.delete( '/:id', function ( req, res, next ) {
     Message.findById( req.param( 'id' ), function ( err, message ) {
         if ( err || !message ) {
             err         = new Error( 'MESSAGE_INVALID_ID' );
-            err.status  = 403;
-
-            return next( err );
-        }
-
-        if ( message.from._id != req.session.user_id ) {
-            err         = new Error( 'MESSAGE_PERMISSION_DENIED' );
             err.status  = 403;
 
             return next( err );

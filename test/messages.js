@@ -9,12 +9,23 @@ describe( 'Messages', function () {
     var attach      = "",
         attachment  = "",
         session     = "",
-        id          = "";
+        id          = "",
+        chat_id     = "";
 
     describe( 'Create', function () {
         var user    = {
                 email   : 'carlos@bitslice.net',
                 pass    : 'admin'
+            },
+            chat    = {
+                from        : {
+                    _id     : '1415425114',
+                    name    : 'Carlos Cessa'
+                },
+                to          : {
+                    _id     : '1414141',
+                    name    : 'John Doe'
+                }
             },
             message = {
                 content : 'Hello world!',
@@ -41,7 +52,27 @@ describe( 'Messages', function () {
                         throw err;
                     }
 
-                    session = message.session = res.body.session;
+                    session = message.session = chat.session = res.body.session;
+
+                    done();
+                });
+        });
+
+        it ( 'should create a chat in the system for the messages to attach to', function ( done ) {
+            request( server )
+                .post( '/chats' )
+                .send( Auth.sign( chat ) )
+                .end( function ( err, res ) {
+                    if ( err ) {
+                        throw err;
+                    }
+
+                    res.body.should.have.property( '_id' );
+                    res.body.should.have.property( 'creation_date' );
+                    res.body.should.have.property( 'from' );
+                    res.body.should.have.property( 'last_message' );
+                    res.body.should.have.property( 'to' );
+                    chat_id = message.chat = res.body._id;
 
                     done();
                 });
@@ -160,6 +191,13 @@ describe( 'Messages', function () {
 
                     done();
                 });
+        });
+
+        it ( 'should remove the chat created for testing purposes', function ( done ) {
+            request( server )
+                .delete( '/chats/' + chat_id )
+                .send( Auth.sign({ session : session }) )
+                .expect( 200, done );
         });
 
         it ( 'should terminate the session started for testing purposes', function ( done ) {

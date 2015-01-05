@@ -15,7 +15,7 @@ describe( 'Users', function() {
             },
             user        = {
                 access_level    : 1,
-                email           : 'jdoe@gmail.com',
+                email           : 'jane.doe@gmail.com',
                 first_name      : 'John',
                 last_name       : 'Doe',
                 pass            : 'pass'
@@ -25,7 +25,7 @@ describe( 'Users', function() {
                 pass    : 'pass'
             },
             credentials = {
-                email   : 'jdoe@gmail.com',
+                email   : 'jane.doe@gmail.com',
                 pass    : 'pass'
             };
 
