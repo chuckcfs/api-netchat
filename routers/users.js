@@ -25,8 +25,7 @@ router.post( '/', function ( req, res, next ) {
     User.create({
         access_level    : req.param( 'access_level' ),
         email           : req.param( 'email' ),
-        first_name      : req.param( 'first_name' ),
-        last_name       : req.param( 'last_name' ),
+        name            : req.param( 'name' ),
         pass            : req.param( 'pass' )
     }, function ( err, user ) {
         if ( err || !user ) {

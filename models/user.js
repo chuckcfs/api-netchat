@@ -17,11 +17,7 @@ var mongoose    = require( 'mongoose' ),
                 unique  : true
             }
         },
-        first_name      : {
-            type        : String,
-            required    : true
-        },
-        last_name       : {
+        name            : {
             type        : String,
             required    : true
         },
