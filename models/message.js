@@ -28,7 +28,7 @@ var mongoose        = require( 'mongoose' ),
                     type        : String,
                     required    : true
                 },
-                email   : {
+                name    : {
                     type        : String,
                     required    : true
                 }
@@ -41,7 +41,7 @@ var mongoose        = require( 'mongoose' ),
                     type        : String,
                     required    : true
                 },
-                email   : {
+                name    : {
                     type        : String,
                     required    : true
                 }

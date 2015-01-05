@@ -18,10 +18,10 @@ describe( 'Messages', function () {
             },
             message = {
                 content : 'Hello world!',
-                from    : 'carlos@bitslice.net',
+                from    : 'Carlos Cessa',
                 to      : {
                     _id     : '1414141',
-                    email   : 'jdoe@gmail.com'
+                    name    : 'John Doe'
                 }
             };
 

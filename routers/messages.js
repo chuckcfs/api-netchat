@@ -12,9 +12,9 @@ router.get( '/', function ( req, res, next ) {
 
 router.post( '/', function ( req, res, next ) {
     var sender  = {
-            _id     : req.session.user_id,
-            email   : req.param( 'from' )
-        };
+        _id     : req.session.user_id,
+        name    : req.param( 'from' )
+    };
 
     Message.create({
         content     : req.param( 'content' ),
