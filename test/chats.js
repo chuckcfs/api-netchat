@@ -84,6 +84,25 @@ describe( 'Chats', function () {
                     done();
                 });
         });
+
+        it ( 'should retrieve a single chat item from the database', function ( done ) {
+            request( server )
+                .get( '/chats/' + id )
+                .send( Auth.sign({ session : session }) )
+                .end( function ( err, res ) {
+                    if ( err ) {
+                        throw err;
+                    }
+
+                    res.body.should.have.property( '_id' );
+                    res.body.should.have.property( 'creation_date' );
+                    res.body.should.have.property( 'from' );
+                    res.body.should.have.property( 'last_message' );
+                    res.body.should.have.property( 'to' );
+
+                    done();
+                });
+        });
     });
 
     describe( 'Delete', function () {

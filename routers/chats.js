@@ -8,6 +8,19 @@ router.get( '/', function ( req, res, next ) {
     Utils.paginate( Chat, req, res, next );
 });
 
+router.get( '/:id', function ( req, res, next ) {
+    Chat.findById( req.param( 'id' ), function ( err, chat ) {
+        if ( err || !chat ) {
+            err         = new Error( 'CHAT_INVALID_ID' );
+            err.status  = 403;
+
+            return next( err );
+        }
+
+        res.json( chat );
+    });
+});
+
 router.post( '/', function ( req, res, next ) {
     Chat.create({
         from    : req.param( 'from' ),

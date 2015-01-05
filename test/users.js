@@ -16,8 +16,7 @@ describe( 'Users', function() {
             user        = {
                 access_level    : 1,
                 email           : 'jane.doe@gmail.com',
-                first_name      : 'John',
-                last_name       : 'Doe',
+                name            : 'John Doe',
                 pass            : 'pass'
             },
             invalid     = {
@@ -66,8 +65,7 @@ describe( 'Users', function() {
                     res.body.should.have.property( 'access_level' );
                     res.body.should.have.property( 'creation_date' );
                     res.body.should.have.property( 'email' );
-                    res.body.should.have.property( 'first_name' );
-                    res.body.should.have.property( 'last_name' );
+                    res.body.should.have.property( 'name' );
                     res.body.should.have.property( 'pass' );
 
                     id  = res.body._id;
@@ -133,8 +131,7 @@ describe( 'Users', function() {
                     res.body.should.have.property( 'access_level' );
                     res.body.should.have.property( 'creation_date' );
                     res.body.should.have.property( 'email' );
-                    res.body.should.have.property( 'first_name' );
-                    res.body.should.have.property( 'last_name' );
+                    res.body.should.have.property( 'name' );
                     res.body.should.have.property( 'pass' );
 
                     done();
@@ -153,7 +150,7 @@ describe( 'Users', function() {
                 rpass   : 'newpass'
             },
             mod     = {
-                first_name  : 'Jane'
+                name    : 'Jane Doe'
             };
 
         it ( 'should get a 403 error when attempting to update a new password with invalid parameters', function ( done ) {
@@ -191,7 +188,7 @@ describe( 'Users', function() {
                         throw err;
                     }
 
-                    assert.equal( 'Jane', res.body.first_name );
+                    assert.equal( 'Jane Doe', res.body.name );
 
                     done();
                 });
