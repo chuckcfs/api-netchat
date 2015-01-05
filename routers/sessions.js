@@ -12,7 +12,8 @@ router.post( '/', function ( req, res, next ) {
         if ( session ) {
             res.json({
                 session : Encrypt.encode( session.id ),
-                type    : session.access_level
+                type    : session.access_level,
+                user_id : session.user_id
             });
         } else {
             var err     = new Error( 'Invalid credentials' );
