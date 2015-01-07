@@ -12,15 +12,10 @@ router.get( '/', function ( req, res, next ) {
 });
 
 router.post( '/', function ( req, res, next ) {
-    var sender  = {
-        _id     : req.session.user_id,
-        name    : req.param( 'from' )
-    };
-
     Message.create({
         chat_id     : req.param( 'chat' ),
         content     : req.param( 'content' ),
-        from        : sender,
+        from        : req.param( 'from' ),
         to          : req.param( 'to' )
     }, function ( err, message ) {
         if ( err || !message ) {

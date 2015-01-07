@@ -29,7 +29,10 @@ describe( 'Messages', function () {
             },
             message = {
                 content : 'Hello world!',
-                from    : 'Carlos Cessa',
+                from    : {
+                    _id     : '1415425114',
+                    name    : 'Carlos Cessa'
+                },
                 to      : {
                     _id     : '1414141',
                     name    : 'John Doe'
