@@ -1,8 +1,12 @@
 var express         = require( 'express' ),
     app             = express(),
+    debug           = require( 'debug' )( 'app' ),
+    io              = require( 'socket.io' ),
     error           = require( './lib/error' ),
     startup         = require( './lib/start' ),
-    SessionHandler  = require( './lib/session' );
+    SessionHandler  = require( './lib/session' ),
+    EventEmitter    = require( 'events' ).EventEmitter,
+    emitter         = new EventEmitter();
 
 // Application required routers
 var sessions        = require( './routers/sessions' ),
@@ -10,7 +14,7 @@ var sessions        = require( './routers/sessions' ),
     messages        = require( './routers/messages' ),
     chats           = require( './routers/chats' );
 
-startup.launch( express, app );
+startup.launch( express, app, emitter );
 
 app.use( '/sessions', sessions );
 
@@ -23,4 +27,15 @@ app.use( '/chats', chats );
 app.use( error.notFound );
 app.use( error.handler );
 
-module.exports  = app;
+// Set the PORT and ENV variables and start the server
+app.set( 'port', process.env.PORT || 3000 );
+app.set( 'env', process.env.ENV || 'development' )
+
+var server  = app.listen( app.get('port'), function() {
+    debug( 'Express server listening on port ' + server.address().port );
+});
+
+// Start listening for connections
+startup.sockets( io.listen( server ), emitter );
+
+module.exports      = app;

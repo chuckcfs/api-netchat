@@ -4,7 +4,7 @@
     "version"           : "1.0.0",
     "private"           : true,
     "scripts"           : {
-        "start"         : "DEBUG=app node ./bin/www",
+        "start"         : "DEBUG=app node server.js",
         "test"          : "mocha"
     },
     "dependencies"      : {
@@ -16,7 +16,8 @@
         "mongoose"      : "3.8.x",
         "morgan"        : "1.5.x",
         "multiparty"    : "4.1.x",
-        "rimraf"        : "2.2.x"
+        "rimraf"        : "2.2.x",
+        "socket.io"     : "1.2.x"
     },
     "devDependencies"   : {
         "mocha"         : "2.1.x",

@@ -47,10 +47,12 @@ router.post( '/', function ( req, res, next ) {
                             path    : join( dest, attachment.name )
                         };
                         message.save( function () {
+                            req.emitter.emit( 'message:new', message );
                             res.json( message );
                         });
                     });
                 } else {
+                    req.emitter.emit( 'message:new', message );
                     res.json( message );
                 }
             });
