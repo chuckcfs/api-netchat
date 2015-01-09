@@ -9,11 +9,7 @@ describe( 'Users', function() {
         id      = "";
 
     describe( 'Create', function() {
-        var admin       = {
-                email   : 'carlos@bitslice.net',
-                pass    : 'admin'
-            },
-            user        = {
+        var user        = {
                 access_level    : 1,
                 email           : 'jane.doe@gmail.com',
                 name            : 'John Doe',
@@ -27,29 +23,6 @@ describe( 'Users', function() {
                 email   : 'jane.doe@gmail.com',
                 pass    : 'pass'
             };
-
-        it ( 'should get a 401 error when attempting to create an user with invalid parameters', function ( done ) {
-            request( server )
-                .post( '/users' )
-                .send( Auth.sign( invalid ) )
-                .expect( 401, done );
-        });
-
-        it ( 'should start a session to create an user in the system', function ( done ) {
-            request( server )
-                .post( '/sessions' )
-                .send( Auth.sign( admin ) )
-                .expect( 'Content-Type', /json/ )
-                .expect( 200 )
-                .end( function( err, res ) {
-                    if ( err ) {
-                        throw err;
-                    }
-
-                    user.session    = session = res.body.session;
-                    done();
-                });
-        });
 
         it ( 'should create a valid user in the system', function ( done ) {
             request( server )
@@ -71,14 +44,6 @@ describe( 'Users', function() {
                     id  = res.body._id;
                     done();
                 });
-        });
-
-        it ( 'should terminate the session started to create the test user', function ( done ) {
-            request( server )
-                .delete( '/sessions/' + session )
-                .send( Auth.sign() )
-                .expect( 'Content-Type', /json/ )
-                .expect( 200, done );
         });
 
         it ( 'should start a session with the newly created user', function ( done ) {
