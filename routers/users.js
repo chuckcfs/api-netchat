@@ -4,6 +4,12 @@ var express     = require( 'express' ),
     Utils       = require( '../lib/utils' );
 
 router.get( '/', function ( req, res, next ) {
+    var filters = ( req.param( 'filters' ) ) ? JSON.parse( req.param( 'filters' ) ) : null;
+    if ( filters && filters.name ) {
+        filters.name        = new RegExp( filters.name, 'i' );
+        req.query.filters   = filters;
+    }
+
     Utils.paginate( User, req, res, next );
 });
 
