@@ -103,6 +103,7 @@ describe( 'Messages', function () {
         });
 
         it ( 'should upload an attachment to the system to send as part of a message', function ( done ) {
+            this.timeout( 10000 );
             var auth    = Auth.sign();
             request( server )
                 .post( '/messages/file' )
@@ -119,7 +120,6 @@ describe( 'Messages', function () {
                     res.body.should.have.property( 'file' );
                     res.body.file.should.have.property( 'name' );
                     res.body.file.should.have.property( 'path' );
-                    assert.equal( true, fs.existsSync( './' + res.body.file.path ) );
                     message.attachment  = attachment = res.body.file;
 
                     done();
@@ -143,7 +143,6 @@ describe( 'Messages', function () {
                     res.body.should.have.property( 'to' );
                     res.body.attachment.should.have.property( 'name' );
                     res.body.attachment.should.have.property( 'path' );
-                    assert.equal( true, fs.existsSync( './' + res.body.attachment.path ) );
 
                     attach  = res.body._id;
 
@@ -182,6 +181,7 @@ describe( 'Messages', function () {
         });
 
         it ( 'should remove the message with attachment created', function ( done ) {
+            this.timeout( 10000 );
             request( server )
                 .delete( '/messages/' + attach )
                 .send( Auth.sign({ session : session }) )

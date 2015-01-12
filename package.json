@@ -8,6 +8,7 @@
         "test"          : "mocha"
     },
     "dependencies"      : {
+        "aws-sdk"       : "2.1.x",
         "bcrypt"        : "0.8.x",
         "body-parser"   : "1.10.x",
         "debug"         : "2.1.x",

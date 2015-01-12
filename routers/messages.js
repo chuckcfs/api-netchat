@@ -32,25 +32,33 @@ router.post( '/', function ( req, res, next ) {
                 // Check if the message has an attachment
                 var attachment  = req.param( 'attachment' );
                 if ( attachment ) {
-                    var dest    = join( config.uploads_path, message.id );
-
-                    Utils.move( attachment.name, config.uploads_tmp_path, dest, function ( err ) {
-                        if ( err ) {
-                            res.json({
-                                message : message,
-                                error   : err
-                            });
-                        }
-
-                        message.attachment  = {
-                            name    : attachment.name,
-                            path    : join( dest, attachment.name )
-                        };
+                    if ( config.s3_uploads ) {
+                        message.attachment  = attachment;
                         message.save( function () {
                             req.emitter.emit( 'message:new', message );
                             res.json( message );
                         });
-                    });
+                    } else {
+                        var dest    = join( config.uploads_path, message.id );
+
+                        Utils.move( attachment.name, config.uploads_tmp_path, dest, function ( err ) {
+                            if ( err ) {
+                                res.json({
+                                    message : message,
+                                    error   : err
+                                });
+                            }
+
+                            message.attachment  = {
+                                name    : attachment.name,
+                                path    : join( dest, attachment.name )
+                            };
+                            message.save( function () {
+                                req.emitter.emit( 'message:new', message );
+                                res.json( message );
+                            });
+                        });
+                    }
                 } else {
                     req.emitter.emit( 'message:new', message );
                     res.json( message );
@@ -95,9 +103,15 @@ router.delete( '/:id', function ( req, res, next ) {
             return next( err );
         }
 
-        rimraf( join( config.uploads_path, req.param( 'id' ) ), function () {
-            message.remove( removed );
-        });
+        if ( config.s3_uploads && message.attachment && message.attachment.name ) {
+            Utils.removeObject( message.attachment.name, function () {
+                message.remove( removed );
+            });
+        } else {
+            rimraf( join( config.uploads_path, req.param( 'id' ) ), function () {
+                message.remove( removed );
+            });
+        }
     });
 });
 
