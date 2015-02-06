@@ -1,7 +1,67 @@
-var express     = require( 'express' ),
+var config      = require( '../config/app' ),
+    rimraf      = require( 'rimraf' ),
+    join        = require( 'path' ).join,
+    express     = require( 'express' ),
     router      = express.Router(),
+    Chat        = require( '../models/chat' ),
+    Message     = require( '../models/message' ),
     User        = require( '../models/user' ),
-    Utils       = require( '../lib/utils' );
+    Utils       = require( '../lib/utils' ),
+    removeChats = function ( user ) {
+        var filters         = {
+                '$or'   : [
+                    {
+                        'to._id'    : user.id
+                    },
+                    {
+                        'from._id'  : user.id
+                    }
+                ]
+            },
+            chatIndex       = 0,
+            messagesFound   = function ( err, messages ) {
+                var index   = 0;
+                for ( var i = 0; i < messages.length; i++ ) {
+                    if ( config.s3_uploads && messages[i].attachment && messages[i].attachment.name ) {
+                        Utils.removeObject( messages[i].attachment.name, function () {
+                            messages[index++].remove();
+                        });
+                    } else {
+                        rimraf( join( config.uploads_path, messages[i].id ), function () {
+                            messages[index++].remove();
+                        });
+                    }
+                }
+            },
+            chatsFound      = function ( err, chats ) {
+                for ( var i = 0; i < chats.length; i++ ) {
+                    var peer    = "";
+
+                    if ( chats[i].from._id == user._id ) {
+                        peer    = chats[i].to._id;
+                    } else {
+                        peer    = chats[i].from._id;
+                    }
+
+                    User.count({
+                        _id     : peer
+                    }, function ( err, count ) {
+                        if ( count == 0 ) {
+                            // Remove the chat's messages and the chat object itself
+                            Message.find({
+                                chat_id : chats[chatIndex]._id
+                            }, messagesFound );
+
+                            chats[chatIndex].remove();
+                        }
+
+                        chatIndex++;
+                    });
+                }
+            };
+
+        Chat.find( filters, chatsFound );
+    };
 
 router.get( '/', function ( req, res, next ) {
     var filters = ( req.param( 'filters' ) ) ? JSON.parse( req.param( 'filters' ) ) : null;
@@ -120,13 +180,14 @@ router.put( '/:id/pass', function ( req, res, next ) {
 });
 
 router.delete( '/:id', function ( req, res, next ) {
-    var removed = function ( err, user ) {
-        if ( err ) {
-            return next( err );
-        }
+    var removed     = function ( err, user ) {
+            if ( err ) {
+                return next( err );
+            }
 
-        res.json( user );
-    };
+            removeChats( user );
+            res.json( user );
+        };
 
     User.findById( req.param( 'id' ), function ( err, user ) {
         if ( err || !user ) {
