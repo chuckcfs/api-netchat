@@ -18,19 +18,11 @@ var mongoose        = require( 'mongoose' ),
                 unique  : true
             }
         },
-        owner_id        : {
-            type        : String,
-            required    : true
-        },
         permissions     : {
             type        : Object,
             required    : true
         },
         secret          : {
-            type        : String,
-            required    : true
-        },
-        website         : {
             type        : String,
             required    : true
         }
