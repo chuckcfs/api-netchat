@@ -1,6 +1,6 @@
 module.exports  = {
-    'application_id'        : '54a1fc47c9187f743a56af74',
-    'application_secret'    : 'mlsbDULAshGBfxvgT5Ji9eDoZpbxSDBD',
+    'application_id'        : '55c2ee3a8919aede26e8cc35',
+    'application_secret'    : 'V3T8jKlP7LDohOAkPBBDXhqZ3vKYVSa3',
     'encryption_key'        : 'bQy&eq3ZGEXR2Cs7WK^8oyA@Gm9zHbAY',
     'page_size'             : 20,
     'request_lifespan'      : 100000,
